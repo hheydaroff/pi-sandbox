@@ -15,6 +15,8 @@ A ready-to-use VS Code DevContainer for running [pi](https://shittycodingagent.a
 
 ## Quick Start
 
+> **For agents:** See [INSTALLATION.md](INSTALLATION.md) for a step-by-step, non-interactive install guide written for autonomous execution.
+
 ### 1. Install
 
 ```bash
