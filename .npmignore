@@ -1,0 +1,5 @@
+.pi-config/
+.pi/
+.git/
+.vscode/
+*.log

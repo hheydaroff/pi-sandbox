@@ -1,0 +1,7 @@
+.pi-config/
+.pi/
+.vscode/
+.env
+.env.*
+node_modules/
+*.log

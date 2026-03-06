@@ -1,0 +1,42 @@
+{
+  "name": "pi-sandbox",
+  "version": "1.0.0",
+  "description": "Initialize pi DevContainer sandbox in any directory with auto-synced configuration",
+  "bin": {
+    "pi-sandbox": "./pi-sandbox"
+  },
+  "scripts": {},
+  "keywords": [
+    "pi",
+    "pi-coding-agent",
+    "devcontainer",
+    "sandbox",
+    "anthropic",
+    "bedrock",
+    "ai",
+    "vscode"
+  ],
+  "author": "Hidayat Heydarov <hidayat.heydarov@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hheydaroff/pi-sandbox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hheydaroff/pi-sandbox/issues"
+  },
+  "homepage": "https://github.com/hheydaroff/pi-sandbox#readme",
+  "files": [
+    "pi-sandbox",
+    ".devcontainer/Dockerfile",
+    ".devcontainer/ralph.sh"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "preferGlobal": true
+}
