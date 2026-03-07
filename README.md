@@ -10,6 +10,7 @@ A ready-to-use VS Code DevContainer for running [pi](https://shittycodingagent.a
 - **Multiple auth methods** — AWS Bedrock, Anthropic API key, OpenAI API key, or subscription login
 - **Docker-in-Docker** — pi can run Docker commands (auto-detected)
 - **GitHub CLI included** — Easy Git authentication with `gh auth login`
+- **uv included** — Fast Python package manager (Astral) available out of the box
 - **Autonomous loop** — `ralph.sh` runs pi in batch mode to work through task lists unattended
 - **Saved preferences** — First-run prompts save to `~/.config/pi-sandbox/config`; subsequent runs use those defaults silently
 

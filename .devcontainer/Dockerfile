@@ -47,6 +47,9 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
     && apt-get install -y gh \
     && rm -rf /var/lib/apt/lists/*
 
+# Install uv (fast Python package manager by Astral)
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
+
 # Create non-root user with docker group access
 RUN useradd -m -s /bin/bash developer && \
     usermod -aG docker developer
