@@ -438,6 +438,7 @@ EOF
 create_gitignore() {
   local gitignore_file=".gitignore"
   local entries=(
+    ".devcontainer/"
     ".pi-config/"
     ".pi/"
     ".vscode/"
