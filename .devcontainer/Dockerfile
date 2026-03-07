@@ -59,4 +59,11 @@ RUN chmod +x /usr/local/bin/ralph.sh
 USER developer
 WORKDIR /workspace
 
+# Install Playwright Chromium binary (ARM64-native, baked into image layer)
+RUN cd /tmp && \
+    npm init -y && \
+    npm install playwright && \
+    ./node_modules/.bin/playwright install chromium && \
+    rm -rf /tmp/node_modules /tmp/package.json /tmp/package-lock.json
+
 # pi installed via postCreateCommand (always gets latest)

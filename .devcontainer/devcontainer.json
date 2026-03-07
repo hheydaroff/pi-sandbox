@@ -1,0 +1,7 @@
+{
+  "name": "pi-sandbox",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": ["--shm-size=1g"]
+}
