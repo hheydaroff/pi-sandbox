@@ -38,12 +38,18 @@ EXTRA_MOUNTS=()
 
 # Load saved config
 load_config() {
+  PI_PROVIDER=""
+  AWS_REGION="eu-central-1"
+  DOCKER_ENABLED="true"
+
   if [ -f "$CONFIG_FILE" ]; then
-    source "$CONFIG_FILE"
-  else
-    PI_PROVIDER=""
-    AWS_REGION="eu-central-1"
-    DOCKER_ENABLED="true"
+    local val
+    val=$(grep -E '^PI_PROVIDER=' "$CONFIG_FILE" | head -1 | cut -d'=' -f2-)
+    [ -n "$val" ] && PI_PROVIDER="$val"
+    val=$(grep -E '^AWS_REGION=' "$CONFIG_FILE" | head -1 | cut -d'=' -f2-)
+    [ -n "$val" ] && AWS_REGION="$val"
+    val=$(grep -E '^DOCKER_ENABLED=' "$CONFIG_FILE" | head -1 | cut -d'=' -f2-)
+    [ -n "$val" ] && DOCKER_ENABLED="$val"
   fi
 }
 
@@ -137,6 +143,7 @@ PI_PROVIDER=$PI_PROVIDER
 AWS_REGION=$AWS_REGION
 DOCKER_ENABLED=$DOCKER_ENABLED
 EOF
+  chmod 600 "$CONFIG_FILE"
 
   echo -e "${GREEN}Configuration saved!${NC}"
   echo ""
@@ -305,6 +312,11 @@ generate_devcontainer() {
   for mount_path in "${EXTRA_MOUNTS[@]}"; do
     local mount_name
     mount_name=$(basename "$mount_path")
+    # Sanitize: reject paths with characters that would break JSON or the mount spec
+    if [[ "$mount_path" =~ [\"\'\\,\`] ]] || [[ "$mount_name" =~ [\"\'\\,\`] ]]; then
+      echo -e "${RED}Error: mount path contains invalid characters: $mount_path${NC}"
+      exit 1
+    fi
     mounts_json="$mounts_json,
     \"source=$mount_path,target=/mnt/$mount_name,type=bind\""
   done
@@ -503,11 +515,27 @@ parse_args() {
         shift
         ;;
       -p|--provider)
-        PI_PROVIDER="$2"
+        case "$2" in
+          bedrock|anthropic|openai|subscription)
+            PI_PROVIDER="$2"
+            ;;
+          *)
+            echo -e "${RED}Invalid provider: $2. Must be one of: bedrock, anthropic, openai, subscription${NC}"
+            exit 1
+            ;;
+        esac
         shift 2
         ;;
       -r|--region)
-        AWS_REGION="$2"
+        case "$2" in
+          us-east-1|us-west-2|eu-central-1|eu-west-1|eu-west-3|ap-northeast-1|ap-southeast-1|ap-southeast-2)
+            AWS_REGION="$2"
+            ;;
+          *)
+            echo -e "${RED}Invalid region: $2. Must be one of: us-east-1, us-west-2, eu-central-1, eu-west-1, eu-west-3, ap-northeast-1, ap-southeast-1, ap-southeast-2${NC}"
+            exit 1
+            ;;
+        esac
         shift 2
         ;;
       -m|--mount)
