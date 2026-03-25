@@ -248,7 +248,7 @@ generate_pi_settings() {
       cat > "$CONFIG_TARGET/settings.json" << EOF
 {
   "defaultProvider": "amazon-bedrock",
-  "defaultModel": "${model_prefix}.anthropic.claude-sonnet-4-6",
+  "defaultModel": "${model_prefix}.anthropic.claude-opus-4-6-v1",
   "defaultThinkingLevel": "medium",
   "theme": "dark"${skills_block}
 }
@@ -260,7 +260,7 @@ EOF
       cat > "$CONFIG_TARGET/settings.json" << EOF
 {
   "defaultProvider": "anthropic",
-  "defaultModel": "claude-sonnet-4-5",
+  "defaultModel": "claude-opus-4-5",
   "defaultThinkingLevel": "medium",
   "theme": "dark"${skills_block}
 }
