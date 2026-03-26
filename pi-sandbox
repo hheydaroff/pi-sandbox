@@ -91,13 +91,15 @@ run_configuration() {
     "AWS Bedrock (AWS credentials)" \
     "Anthropic API key (ANTHROPIC_API_KEY)" \
     "OpenAI API key (OPENAI_API_KEY)" \
-    "Subscription (Claude Pro/Max, ChatGPT Plus — run /login in container)"
+    "Subscription (Claude Pro/Max, ChatGPT Plus — run /login in container)" \
+    "LM Studio (local, no auth needed)"
 
   case $REPLY in
     1) PI_PROVIDER="bedrock" ;;
     2) PI_PROVIDER="anthropic" ;;
     3) PI_PROVIDER="openai" ;;
     4) PI_PROVIDER="subscription" ;;
+    5) PI_PROVIDER="lmstudio" ;;
   esac
 
   echo ""
@@ -290,6 +292,18 @@ EOF
 EOF
       echo "  Generated: settings.json (subscription — run /login to authenticate)"
       ;;
+
+    lmstudio)
+      cat > "$CONFIG_TARGET/settings.json" << EOF
+{
+  "defaultProvider": "lm-studio",
+  "defaultModel": "qwen3.5-35b-a3b",
+  "defaultThinkingLevel": "off",
+  "theme": "dark"${skills_block}
+}
+EOF
+      echo "  Generated: settings.json (LM Studio — local model server)"
+      ;;
   esac
 }
 
@@ -411,6 +425,20 @@ echo '  Run: pi' && \
 echo '  Then inside pi: /login  (select your provider)' && \
 echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'"
       ;;
+
+    lmstudio)
+      env_json=""
+      post_create_cmd="${config_sync_cmd}npm config set prefix \$HOME/.local && npm install -g @mariozechner/pi-coding-agent && \
+echo 'export PATH=\\\"\$HOME/.local/bin:\$PATH\\\"' >> ~/.bashrc && \
+echo '' && \
+echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && \
+echo '  Pi Sandbox ready!' && \
+echo '  Config synced: AGENTS.md, skills, prompts, extensions, themes' && \
+echo '  Provider: LM Studio (local)' && \
+echo '  Make sure LM Studio is running on the host at port 1234' && \
+echo '  Run: pi' && \
+echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'"
+      ;;
   esac
 
   # Build containerEnv section
@@ -485,7 +513,7 @@ show_help() {
   echo "Options:"
   echo "  -f, --force        Overwrite existing .devcontainer"
   echo "  -o, --open         Open in VS Code after setup"
-  echo "  -p, --provider     Auth provider: bedrock, anthropic, openai, subscription"
+  echo "  -p, --provider     Auth provider: bedrock, anthropic, openai, subscription, lmstudio"
   echo "  -r, --region       AWS region (for Bedrock): eu-central-1, us-east-1, etc."
   echo "  -m, --mount        Add extra mount path (can be used multiple times)"
   echo "  --no-docker        Disable Docker socket mount"
@@ -516,11 +544,11 @@ parse_args() {
         ;;
       -p|--provider)
         case "$2" in
-          bedrock|anthropic|openai|subscription)
+          bedrock|anthropic|openai|subscription|lmstudio)
             PI_PROVIDER="$2"
             ;;
           *)
-            echo -e "${RED}Invalid provider: $2. Must be one of: bedrock, anthropic, openai, subscription${NC}"
+            echo -e "${RED}Invalid provider: $2. Must be one of: bedrock, anthropic, openai, subscription, lmstudio${NC}"
             exit 1
             ;;
         esac
@@ -650,6 +678,10 @@ main() {
     subscription)
       echo "  3. Run: pi"
       echo "  4. Inside pi: /login  (then select your provider)"
+      ;;
+    lmstudio)
+      echo "  3. Make sure LM Studio is running on the host at port 1234"
+      echo "  4. Run: pi"
       ;;
   esac
 
